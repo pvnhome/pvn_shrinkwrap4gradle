@@ -1,5 +1,6 @@
 plugins {
     id 'java-library'
+    id 'ivy-publish'
     id 'eclipse'
 }
 
@@ -27,5 +28,38 @@ eclipse {
    classpath {
       containers "org.eclipse.jdt.junit.JUNIT_CONTAINER/4"
       minusConfigurations += [ configurations.testCompileOnly ]
+   }
+}
+
+task sourceJar(type: Jar) {
+   from sourceSets.main.java
+   classifier "source"
+}
+
+publishing {
+   publications {
+      ivyJava(IvyPublication) {
+         from components.java
+
+         configurations {
+            sources
+         }
+         artifact(sourceJar) {
+            conf "sources"
+            type "sources"
+         }
+      }
+   }
+   repositories {
+      ivy {
+         url IVY_REPOSITORY
+         if (IVY_REPOSITORY.startsWith('sftp')) {
+            // Credentials for use with SFTP repo only
+            credentials {
+               username IVY_REPOSITORY_USER
+               password IVY_REPOSITORY_PWD
+            }
+         }
+      }
    }
 }
