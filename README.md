@@ -9,7 +9,7 @@ Resolution of libraries included in WAR lib folder is very simple:
 ```java
 Collection<? extends Archive> libs = WarLibResolver.resolve().asList(JavaArchive.class);
 
-WebArchive war = ShrinkWrap.create(WebArchive.class, "iris-api-ee.war")
+WebArchive war = ShrinkWrap.create(WebArchive.class, "some.war")
                            // add other artifacts
                            // .addClass(AppConsts.class)
                            // .addClass(AppProps.class)
