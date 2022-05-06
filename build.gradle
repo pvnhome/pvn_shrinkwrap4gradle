@@ -1,11 +1,27 @@
 plugins {
     id 'java-library'
     id 'ivy-publish'
+    id 'maven-publish'
     id 'eclipse'
 }
 
 group = 'kz.pvnhome.pvnsw4gradle'
-version = '1.1.0'
+version = '1.1.1'
+
+ext {
+   javaVersion = JavaVersion.toVersion(12)
+}
+
+java {
+   sourceCompatibility = javaVersion
+   targetCompatibility = javaVersion
+
+   // Using the maven-publish or ivy-publish plugin, this will not only automatically create and publish a -sources.jar
+   // but also publish the information that these exist as variants in Gradle Module Metadata.
+   // If activated, a Java and Java Library project automatically provides the javadocJar and sourcesJar tasks.
+   // (since 6.0.1)
+   withSourcesJar()
+}
 
 repositories {
     maven { url 'https://repo.gradle.org/gradle/libs-releases' }
@@ -31,23 +47,20 @@ eclipse {
    }
 }
 
+/*
 task sourceJar(type: Jar) {
    from sourceSets.main.java
    classifier "source"
 }
+*/
 
 publishing {
    publications {
       ivyJava(IvyPublication) {
          from components.java
-
-         configurations {
-            sources
-         }
-         artifact(sourceJar) {
-            conf "sources"
-            type "sources"
-         }
+      }
+      mavenJava(MavenPublication) {
+         from components.java
       }
    }
    repositories {
@@ -63,3 +76,48 @@ publishing {
       }
    }
 }
+
+
+/*
+      publishing {
+         publications {
+            ivyJava(IvyPublication) {
+               from components.java
+            }
+            mavenJava(MavenPublication) {
+               from components.java
+               //artifact mavenSourceJar
+            }
+         }
+         repositories {
+            ivy {
+               url IVY_REPOSITORY
+               if (IVY_REPOSITORY.startsWith('sftp')) {
+                  // Credentials for use with SFTP repo only
+                  credentials {
+                     username IVY_REPOSITORY_USER
+                     password IVY_REPOSITORY_PWD
+                  }
+               }
+            }
+            if (project.hasProperty('IVY_REMOTE_REPOSITORY')) {
+               ivy {
+                  url IVY_REMOTE_REPOSITORY
+                  credentials {
+                     username IVY_REMOTE_REPOSITORY_USER
+                     password IVY_REMOTE_REPOSITORY_PWD
+                  }
+               }
+            }
+            if (project.hasProperty('MAVEN_REMOTE_REPOSITORY')) {
+               maven {
+                  url = MAVEN_REMOTE_REPOSITORY
+                  credentials {
+                     username MAVEN_REMOTE_REPOSITORY_USER
+                     password MAVEN_REMOTE_REPOSITORY_PWD
+                  }
+               }
+            }
+         }
+      }
+*/
