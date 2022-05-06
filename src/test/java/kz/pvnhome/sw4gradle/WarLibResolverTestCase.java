@@ -22,9 +22,9 @@ public class WarLibResolverTestCase {
       libs.sort((a1, a2) -> a1.getName().compareTo(a2.getName()));
 
       assertEquals(4, libs.size());
-      assertEquals("gradle-tooling-api-5.1.1.jar", libs.get(0).getName());
+      assertEquals("gradle-tooling-api-7.4.1.jar", libs.get(0).getName());
       assertEquals("shrinkwrap-api-1.2.6.jar", libs.get(1).getName());
-      assertEquals("slf4j-api-1.7.25.jar", libs.get(2).getName());
+      assertEquals("slf4j-api-1.7.30.jar", libs.get(2).getName());
       assertEquals("slf4j-simple-1.7.25.jar", libs.get(3).getName());
 
       for (Archive a : libs) {

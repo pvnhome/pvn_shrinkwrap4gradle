@@ -6,15 +6,15 @@ plugins {
 }
 
 group = 'kz.pvnhome.pvnsw4gradle'
-version = '1.1.1'
 
-ext {
-   javaVersion = JavaVersion.toVersion(12)
-}
+version = '1.2.0'
+
+assert hasProperty('IVY_REMOTE_REPOSITORY'): "Set the property 'IVY_REMOTE_REPOSITORY' in your your gradle.properties pointing to remote Ivy repository"
 
 java {
-   sourceCompatibility = javaVersion
-   targetCompatibility = javaVersion
+   toolchain {
+      languageVersion = JavaLanguageVersion.of(12)
+   }
 
    // Using the maven-publish or ivy-publish plugin, this will not only automatically create and publish a -sources.jar
    // but also publish the information that these exist as variants in Gradle Module Metadata.
@@ -28,38 +28,26 @@ repositories {
 }
 
 dependencies {
-   implementation group: 'org.gradle', name: 'gradle-tooling-api', version: '5.1.1'
+   implementation group: 'org.gradle', name: 'gradle-tooling-api', version: '7.4.1'
    implementation group: 'org.jboss.shrinkwrap', name: 'shrinkwrap-api', version: '1.2.6'
    implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
 
-   List junitJar = [[group: 'junit', name: 'junit', version: '4.12']]
-   testCompileOnly junitJar
-   testRuntimeOnly junitJar
+   testImplementation group: 'junit', name: 'junit', version: '4.12'
 
    testRuntimeOnly group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
    testRuntimeOnly group: 'org.jboss.shrinkwrap', name: 'shrinkwrap-impl-base', version: '1.2.6'
 }
 
-eclipse {
-   classpath {
-      containers "org.eclipse.jdt.junit.JUNIT_CONTAINER/4"
-      minusConfigurations += [ configurations.testCompileOnly ]
+jar {
+   manifest {
+      attributes('Implementation-Title': project.name,
+                 'Implementation-Version': project.version)
    }
 }
 
-/*
-task sourceJar(type: Jar) {
-   from sourceSets.main.java
-   classifier "source"
-}
-*/
-
 publishing {
    publications {
-      ivyJava(IvyPublication) {
-         from components.java
-      }
-      mavenJava(MavenPublication) {
+      ivy(IvyPublication) {
          from components.java
       }
    }
@@ -74,50 +62,12 @@ publishing {
             }
          }
       }
-   }
-}
-
-
-/*
-      publishing {
-         publications {
-            ivyJava(IvyPublication) {
-               from components.java
-            }
-            mavenJava(MavenPublication) {
-               from components.java
-               //artifact mavenSourceJar
-            }
-         }
-         repositories {
-            ivy {
-               url IVY_REPOSITORY
-               if (IVY_REPOSITORY.startsWith('sftp')) {
-                  // Credentials for use with SFTP repo only
-                  credentials {
-                     username IVY_REPOSITORY_USER
-                     password IVY_REPOSITORY_PWD
-                  }
-               }
-            }
-            if (project.hasProperty('IVY_REMOTE_REPOSITORY')) {
-               ivy {
-                  url IVY_REMOTE_REPOSITORY
-                  credentials {
-                     username IVY_REMOTE_REPOSITORY_USER
-                     password IVY_REMOTE_REPOSITORY_PWD
-                  }
-               }
-            }
-            if (project.hasProperty('MAVEN_REMOTE_REPOSITORY')) {
-               maven {
-                  url = MAVEN_REMOTE_REPOSITORY
-                  credentials {
-                     username MAVEN_REMOTE_REPOSITORY_USER
-                     password MAVEN_REMOTE_REPOSITORY_PWD
-                  }
-               }
-            }
+      ivy {
+         url IVY_REMOTE_REPOSITORY
+         credentials {
+            username IVY_REMOTE_REPOSITORY_USER
+            password IVY_REMOTE_REPOSITORY_PWD
          }
       }
-*/
+   }
+}

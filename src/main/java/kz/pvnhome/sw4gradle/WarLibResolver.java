@@ -128,8 +128,8 @@ public class WarLibResolver {
       if (!oldVer.isEmpty() && !newVer.isEmpty()) {
          int i = 0;
          while (i < oldVer.size() || i < newVer.size()) {
-            int n = i < newVer.size() ? newVer.get(i).intValue() : 0;
-            int o = i < oldVer.size() ? oldVer.get(i).intValue() : 0;
+            int n = i < newVer.size() ? newVer.get(i) : 0;
+            int o = i < oldVer.size() ? oldVer.get(i) : 0;
             if (n > o) {
                return true;
             } else if (n < o) {
@@ -153,7 +153,7 @@ public class WarLibResolver {
                sb.append(ch);
             } else {
                if (sb.length() > 0) {
-                  digits.add(new Integer(sb.toString()));
+                  digits.add(Integer.parseInt(sb.toString()));
                   sb.setLength(0);
                }
                if (ch != '.') {
@@ -162,7 +162,7 @@ public class WarLibResolver {
             }
          }
          if (sb.length() > 0) {
-            digits.add(new Integer(sb.toString()));
+            digits.add(Integer.parseInt(sb.toString()));
          }
       }
       return digits;
